@@ -20,7 +20,16 @@ public class MySqliteOpenHelper extends SQLiteOpenHelper{
     //用于初次使用软件时生成数据库表
     @Override
     public void onCreate(SQLiteDatabase db) {
-        //执行SQL语句 创建表 此处注意exists后的空格 不然语句就成了existsgirls而报错
+        /**
+         * 图片的所以属性
+         * title : 清纯气质韩国美女沙滩写真
+         * picUrl : http://t1.du114.com/uploads/151201/10-1512011521415N.jpg
+         * description : 114美女
+         * ctime : 2016-03-06 14:11
+         * url : http://www.du114.com/qingchun/66307.html
+         */
+
+        //执行SQL语句 创建表 此处注意table后的空格 不然语句就成了tablegirls而报错
         db.execSQL("create table " + tableNmae + "(id integer primary key autoincrement,title text," +
                 "picUrl text,description text,ctime text,url text)");
     }

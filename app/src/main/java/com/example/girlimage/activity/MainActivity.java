@@ -37,7 +37,8 @@ public class MainActivity extends AppCompatActivity implements
     private GridLayoutManager mGridLayoutManager;
     //图片请求的页面
     private static int page = 1;
-
+    //数据库操作
+    private GirlImageDao dao;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements
             mRequest.getGirlList(this,1);
         } else {
             //没有网络则加载数据库的数据
-            GirlImageDao dao = new GirlImageDao(this);
+            dao = new GirlImageDao(this);
             List<GirlsBean.ShowapiResBodyBean.NewslistBean> list = dao.queryAllGirls();
             if (list.size() == 0) {
                 //集合数据为0则第一次进入也未联网
@@ -87,8 +88,8 @@ public class MainActivity extends AppCompatActivity implements
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
-                //如果没有网络则无法加载
-                if (!isNetwork) {
+                //如果没有网络,以及数据则无法加载
+                if (!isNetwork && dao.queryAllGirls().size() == 0) {
                     Toast.makeText(MainActivity.this,"网络连接失败",Toast.LENGTH_SHORT).show();
                     return;
                 }
@@ -199,8 +200,10 @@ public class MainActivity extends AppCompatActivity implements
     //注册网络变化广播接收器
     public void registerNetworkChangeReceiver() {
         IntentFilter intentFilter = new IntentFilter();
+        //广播的动作类型
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         networkChangeReceiver = new NetworkChangeReceiver();
+        //注册
         registerReceiver(networkChangeReceiver,intentFilter);
     }
     public class NetworkChangeReceiver extends BroadcastReceiver {
